@@ -80,9 +80,7 @@
               class="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-[#fff9f0] rounded-full border-l-2 border-red-300"
             ></div>
 
-            <h3 class="text-2xl font-bold text-red-600 mb-1">
-              FREE MAKAN MAKAN
-            </h3>
+            <h3 class="text-2xl font-bold text-red-600 mb-1">FREE MAKAN</h3>
             <p class="text-sm text-red-400 uppercase tracking-widest">
               Anywhere You Want
             </p>
