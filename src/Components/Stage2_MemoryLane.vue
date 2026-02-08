@@ -91,28 +91,28 @@
               >
             </div>
 
-            <!-- THE QUESTION -->
+            <!-- THE QUESTION (Fix: Ditambah tanda tanya ?) -->
             <h3
               class="text-xl md:text-2xl text-white font-medium leading-relaxed mb-8 min-h-[4rem]"
             >
-              {{ currentQuestion.question }}
+              {{ currentQuestion?.question }}
             </h3>
 
-            <!-- OPTIONS GRID -->
+            <!-- OPTIONS GRID (Fix: Ditambah tanda tanya ?) -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
               <button
-                v-for="(option, idx) in currentQuestion.options"
+                v-for="(option, idx) in currentQuestion?.options"
                 :key="idx"
                 @click="handleAnswer(option, idx)"
                 :disabled="isProcessing"
                 class="relative overflow-hidden rounded-xl p-4 text-left border border-white/5 bg-gradient-to-br from-white/5 to-transparent hover:bg-white/10 hover:border-purple-400/30 transition-all duration-300 group/btn active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                 :class="{
                   '!bg-green-500/20 !border-green-500':
-                    showResult && option === currentQuestion.correctAnswer,
+                    showResult && option === currentQuestion?.correctAnswer,
                   '!bg-red-500/20 !border-red-500':
                     showResult &&
                     selectedIdx === idx &&
-                    option !== currentQuestion.correctAnswer,
+                    option !== currentQuestion?.correctAnswer,
                 }"
               >
                 <!-- Hover Glow Effect -->
@@ -177,8 +177,15 @@ import { ref, computed } from "vue";
 // Definisi Emits
 const emit = defineEmits(["complete"]);
 
+// Definisi Tipe Data
+interface Question {
+  question: string;
+  options: string[];
+  correctAnswer: string;
+}
+
 // === DATA QUIZ (Silakan Edit Di Sini) ===
-const questions = [
+const questions: Question[] = [
   {
     question: "Apa makanan kesukaan iam?",
     options: ["Padang Upik", "Sarden", "Nasi Mawut Arema", "Pecel"],
@@ -216,13 +223,17 @@ const progressPercentage = computed(
 
 // === LOGIC ===
 const handleAnswer = (option: string, index: number) => {
-  if (isProcessing.value) return; // Prevent double click
+  if (isProcessing.value) return;
+
+  // Guard Clause: Mencegah error jika currentQuestion undefined
+  const question = currentQuestion.value;
+  if (!question) return;
 
   isProcessing.value = true;
   selectedIdx.value = index;
-  showResult.value = true; // Trigger color change (Green/Red)
+  showResult.value = true;
 
-  const isCorrect = option === currentQuestion.value.correctAnswer;
+  const isCorrect = option === question.correctAnswer;
 
   if (isCorrect) {
     // Correct Answer Logic
@@ -235,7 +246,7 @@ const handleAnswer = (option: string, index: number) => {
         // Finish
         finishStage();
       }
-    }, 1000); // Delay 1 detik untuk user lihat warna hijau
+    }, 1000);
   } else {
     // Wrong Answer Logic
     triggerShake();
@@ -257,7 +268,7 @@ const finishStage = () => {
   isFinished.value = true;
   setTimeout(() => {
     emit("complete");
-  }, 3000); // 3 Detik nampilin "Perfect" screen sebelum pindah
+  }, 3000);
 };
 
 const triggerShake = () => {
