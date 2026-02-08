@@ -35,7 +35,7 @@
           <input
             v-model="inputDate"
             type="text"
-            placeholder="DD/MM/YYYY"
+            placeholder="DDMMYYYY"
             class="w-full bg-black/30 border border-purple-500/30 rounded-lg px-4 py-3 text-center text-lg tracking-widest focus:outline-none focus:border-purple-400 focus:shadow-[0_0_15px_rgba(168,85,247,0.5)] transition-all duration-300 placeholder-gray-600"
             @keyup.enter="validateDate"
           />
@@ -56,7 +56,7 @@
         <!-- QUESTION 2 -->
         <div v-else-if="step === 2" class="space-y-4">
           <label class="block text-sm font-medium text-purple-300"
-            >Singkatan nama manusia Sepinggan Pratama?</label
+            >Panggilan sayang aku ke kamu?</label
           >
           <input
             v-model="inputName"
@@ -95,7 +95,10 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import Spline from "spline-vue/v3";
+import Spline from "spline-vue";
+
+// Define Emits
+const emit = defineEmits(['unlock']);
 
 // State
 const step = ref(1);
@@ -104,49 +107,47 @@ const inputName = ref("");
 const errorMsg = ref("");
 const isUnlocked = ref(false);
 
-// Audio (Pastikan file ada di folder public/assets)
-const audioUnlock = new Audio("/assets/unlock.mp3");
-const audioError = new Audio("/assets/error.mp3");
-
 // Logic Validasi 1
 const validateDate = () => {
-  // Hapus separator user kalau ada, misal user ketik 13-09-2016
+  // Hapus separator user kalau ada
   const cleanDate = inputDate.value.replace(/[^0-9]/g, "");
 
+  // GANTI TANGGAL JADIAN DI SINI (Format: DDMMYYYY)
+  // Contoh: 13092016
   if (cleanDate === "13092016") {
-    // Logic sederhana tanpa library date
     errorMsg.value = "";
     step.value = 2; // Lanjut ke pertanyaan kedua
-    audioUnlock.play(); // Suara 'pling' kecil
   } else {
-    errorMsg.value = "Hayo lupa ya? 😜";
-    audioError.play();
+    errorMsg.value = "Hayo lupa ya? 😜 Coba ingat lagi!";
     shakeScreen();
   }
 };
 
 // Logic Validasi 2
 const validateName = () => {
-  if (inputName.value.toLowerCase() === "iam") {
+  // GANTI PANGGILAN SAYANG DI SINI (Huruf kecil semua)
+  if (inputName.value.toLowerCase() === "sayang") {
     errorMsg.value = "";
     isUnlocked.value = true;
-    audioUnlock.play();
 
     // Emit event ke Parent Component untuk ganti ke Stage 2 setelah animasi selesai (1.5s)
     setTimeout(() => {
-      // logic pindah component bisa emit('nextStage')
-      console.log("Welcome to Stage 2!");
+      emit('unlock');
     }, 1500);
   } else {
     errorMsg.value = "Salah sayang, coba ingat nama panggilannya!";
-    audioError.play();
     shakeScreen();
   }
 };
 
 const shakeScreen = () => {
-  // Implementasi getar sederhana bisa via class binding 'animate-shake'
-  // Di sini hanya contoh logic
+  const container = document.querySelector('.stage-container');
+  if (container) {
+    container.classList.add('animate-shake');
+    setTimeout(() => {
+      container.classList.remove('animate-shake');
+    }, 500);
+  }
 };
 </script>
 
@@ -167,20 +168,12 @@ const shakeScreen = () => {
 
 /* Animasi Layar Terbelah (Split Screen) */
 @keyframes splitUp {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-100%);
-  }
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-100%); }
 }
 @keyframes splitDown {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(100%);
-  }
+  0% { transform: translateY(0); }
+  100% { transform: translateY(100%); }
 }
 
 .animate-split-up {
@@ -188,5 +181,15 @@ const shakeScreen = () => {
 }
 .animate-split-down {
   animation: splitDown 1.5s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+}
+
+/* Animasi Shake untuk Error */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+.animate-shake {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
 }
 </style>
