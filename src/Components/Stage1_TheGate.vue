@@ -56,7 +56,7 @@
         <!-- QUESTION 2 -->
         <div v-else-if="step === 2" class="space-y-4">
           <label class="block text-sm font-medium text-purple-300"
-            >Singkatan nama manusia se-Pinn-gan Pratama?</label
+            >Singkatan nama manusia Sepinggan Pratama?</label
           >
           <input
             v-model="inputName"
