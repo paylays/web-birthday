@@ -1,107 +1,154 @@
 <template>
   <div
-    class="stage-container relative w-full h-screen overflow-hidden bg-gradient-to-br from-[#1a0b2e] via-[#2d1b4e] to-[#0f0518] flex flex-col items-center justify-center text-white"
+    class="stage-container relative w-full h-screen overflow-hidden bg-[#0f0518] flex flex-col items-center justify-center text-white"
   >
-    <!-- BACKGROUND: Animated Floating Particles (CSS) -->
-    <div class="absolute inset-0 z-0 overflow-hidden">
+    <!-- BACKGROUND: Dynamic Aurora & Stars -->
+    <div class="absolute inset-0 z-0">
       <div
-        v-for="n in 20"
-        :key="n"
-        class="floating-orb"
-        :style="getOrbStyle(n)"
+        class="absolute inset-0 bg-gradient-to-b from-[#1a0b2e] via-[#2d1b4e] to-[#000000]"
       ></div>
+      <!-- Animated Aurora Blobs -->
+      <div
+        class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-purple-600/30 rounded-full blur-[100px] animate-blob"
+      ></div>
+      <div
+        class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-pink-600/20 rounded-full blur-[100px] animate-blob animation-delay-2000"
+      ></div>
+      <div
+        class="absolute top-[40%] left-[50%] transform -translate-x-1/2 w-[300px] h-[300px] bg-blue-500/20 rounded-full blur-[100px] animate-blob animation-delay-4000"
+      ></div>
+
+      <!-- Stars (CSS generated) -->
+      <div class="stars"></div>
+      <div class="stars2"></div>
     </div>
 
-    <!-- BACKGROUND: Interactive Mouse Paralax Effect -->
-    <div
-      class="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 animate-pulse-slow"
-    ></div>
-
-    <!-- CONTENT: Login Form -->
-    <Transition name="fade-slide" mode="out-in">
+    <!-- CONTENT: Glass Card -->
+    <Transition name="zoom-fade" mode="out-in" appear>
       <div
         v-if="!isUnlocked"
-        class="z-10 w-4/5 max-w-sm backdrop-blur-xl bg-white/10 border border-white/20 p-8 rounded-3xl shadow-[0_0_50px_rgba(139,92,246,0.4)] relative group"
+        class="z-10 w-[90%] max-w-md relative group perspective-1000"
       >
-        <!-- Decorative Glow -->
+        <!-- Glowing Border Gradient -->
         <div
-          class="absolute -inset-1 bg-gradient-to-r from-pink-500 to-purple-600 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"
+          class="absolute -inset-0.5 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 rounded-3xl opacity-50 blur group-hover:opacity-100 transition duration-1000 animate-tilt"
         ></div>
 
-        <div class="relative">
-          <h1
-            class="text-4xl font-serif text-center mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-200 to-pink-200 drop-shadow-sm"
-          >
-            Welcome Home
-          </h1>
-          <p
-            class="text-xs text-center text-purple-200/80 mb-8 font-medium tracking-[0.2em] uppercase"
-          >
-            A Special Place For Us
-          </p>
-
-          <!-- QUESTION 1 -->
-          <div v-if="step === 1" class="space-y-5">
-            <label class="block text-sm font-medium text-purple-300 text-center"
-              >Kapan kita jadian?</label
+        <!-- Main Card Content -->
+        <div
+          class="relative bg-black/40 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 shadow-2xl overflow-hidden"
+        >
+          <!-- Header -->
+          <div class="text-center mb-10 space-y-2">
+            <h1
+              class="text-5xl font-serif text-transparent bg-clip-text bg-gradient-to-br from-white via-pink-200 to-purple-200 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] animate-title-float"
             >
-            <input
-              v-model="inputDate"
-              type="text"
-              placeholder="DDMMYYYY"
-              class="w-full bg-black/40 border border-purple-500/30 rounded-xl px-4 py-4 text-center text-xl tracking-[0.3em] text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-500/50 transition-all duration-300"
-              @keyup.enter="validateDate"
-            />
+              Welcome Home
+            </h1>
+            <div
+              class="h-1 w-20 mx-auto bg-gradient-to-r from-transparent via-purple-500 to-transparent rounded-full opacity-70"
+            ></div>
             <p
-              v-if="errorMsg"
-              class="text-red-400 text-xs text-center font-bold animate-bounce"
+              class="text-xs text-purple-200/70 tracking-[0.4em] uppercase font-light"
             >
-              {{ errorMsg }}
+              Enter The Secret Place
             </p>
-            <button
-              @click="validateDate"
-              class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-purple-900/50 transform transition-all active:scale-95 hover:-translate-y-1"
-            >
-              Jawab ❤️
-            </button>
           </div>
 
-          <!-- QUESTION 2 -->
-          <div v-else-if="step === 2" class="space-y-5">
-            <label class="block text-sm font-medium text-purple-300 text-center"
-              >Panggilan sayang aku ke kamu?</label
-            >
-            <input
-              v-model="inputName"
-              type="text"
-              placeholder="???"
-              class="w-full bg-black/40 border border-purple-500/30 rounded-xl px-4 py-4 text-center text-xl font-bold tracking-widest text-white placeholder-gray-500 focus:outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-500/50 transition-all duration-300 uppercase"
-              @keyup.enter="validateName"
-            />
-            <p
-              v-if="errorMsg"
-              class="text-red-400 text-xs text-center font-bold animate-bounce"
-            >
-              {{ errorMsg }}
-            </p>
-            <button
-              @click="validateName"
-              class="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-pink-900/50 transform transition-all active:scale-95 hover:-translate-y-1"
-            >
-              Buka Hati 🔓
-            </button>
+          <!-- INPUT FORM WRAPPER -->
+          <div class="relative min-h-[200px]">
+            <!-- QUESTION 1 -->
+            <Transition name="slide-left" mode="out-in">
+              <div v-if="step === 1" key="step1" class="space-y-6">
+                <div class="relative group/input">
+                  <label
+                    class="block text-xs font-medium text-pink-300 mb-2 ml-1 tracking-wider uppercase"
+                  >
+                    Kapan kita jadian?
+                  </label>
+                  <input
+                    v-model="inputDate"
+                    type="text"
+                    placeholder="DDMMYYYY"
+                    class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-center text-2xl tracking-[0.5em] text-white placeholder-white/20 focus:outline-none focus:bg-white/10 focus:border-pink-500/50 focus:ring-4 focus:ring-pink-500/20 transition-all duration-300 font-mono"
+                    @keyup.enter="validateDate"
+                  />
+                  <!-- Error Message -->
+                  <p
+                    v-if="errorMsg"
+                    class="absolute -bottom-6 left-0 w-full text-center text-red-400 text-xs font-bold animate-pulse"
+                  >
+                    {{ errorMsg }}
+                  </p>
+                </div>
+
+                <button
+                  @click="validateDate"
+                  class="w-full group relative overflow-hidden bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-bold tracking-widest shadow-lg transform transition-all hover:scale-[1.02] active:scale-95"
+                >
+                  <span
+                    class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
+                  ></span>
+                  <span class="relative flex items-center justify-center gap-2">
+                    LANJUT
+                    <span class="group-hover:translate-x-1 transition-transform"
+                      >→</span
+                    >
+                  </span>
+                </button>
+              </div>
+
+              <!-- QUESTION 2 -->
+              <div v-else-if="step === 2" key="step2" class="space-y-6">
+                <div class="relative group/input">
+                  <label
+                    class="block text-xs font-medium text-purple-300 mb-2 ml-1 tracking-wider uppercase"
+                  >
+                    Panggilan cowo terganteng di hidupmu?
+                  </label>
+                  <input
+                    v-model="inputName"
+                    type="text"
+                    placeholder="..."
+                    class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-center text-2xl font-bold tracking-widest text-white placeholder-white/20 focus:outline-none focus:bg-white/10 focus:border-purple-500/50 focus:ring-4 focus:ring-purple-500/20 transition-all duration-300 uppercase"
+                    @keyup.enter="validateName"
+                  />
+                  <p
+                    v-if="errorMsg"
+                    class="absolute -bottom-6 left-0 w-full text-center text-red-400 text-xs font-bold animate-pulse"
+                  >
+                    {{ errorMsg }}
+                  </p>
+                </div>
+
+                <button
+                  @click="validateName"
+                  class="w-full group relative overflow-hidden bg-gradient-to-r from-pink-600 to-purple-600 text-white py-4 rounded-xl font-bold tracking-widest shadow-lg transform transition-all hover:scale-[1.02] active:scale-95"
+                >
+                  <span
+                    class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
+                  ></span>
+                  <span class="relative flex items-center justify-center gap-2">
+                    BUKA HATI 🔓
+                  </span>
+                </button>
+              </div>
+            </Transition>
           </div>
         </div>
       </div>
     </Transition>
 
-    <!-- OVERLAY: Curtain Reveal Effect -->
-    <div v-if="isUnlocked" class="absolute inset-0 z-50 pointer-events-none">
+    <!-- CURTAIN REVEAL -->
+    <div
+      v-if="isUnlocked"
+      class="absolute inset-0 z-50 pointer-events-none flex flex-col"
+    >
       <div
-        class="absolute top-0 left-0 w-full h-1/2 bg-[#1a0b2e] animate-curtain-up"
+        class="h-1/2 w-full bg-[#1a0b2e] animate-curtain-up border-b-2 border-purple-500/50 shadow-[0_0_50px_rgba(168,85,247,0.5)]"
       ></div>
       <div
-        class="absolute bottom-0 left-0 w-full h-1/2 bg-[#1a0b2e] animate-curtain-down"
+        class="h-1/2 w-full bg-[#1a0b2e] animate-curtain-down border-t-2 border-purple-500/50 shadow-[0_0_50px_rgba(168,85,247,0.5)]"
       ></div>
     </div>
   </div>
@@ -110,7 +157,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-// Define Emits
 const emit = defineEmits(["unlock"]);
 
 // State
@@ -120,155 +166,182 @@ const inputName = ref("");
 const errorMsg = ref("");
 const isUnlocked = ref(false);
 
-// Generate random styles for floating orbs
-const getOrbStyle = (n: number) => {
-  const size = Math.random() * 100 + 50 + "px";
-  const left = Math.random() * 100 + "%";
-  const top = Math.random() * 100 + "%";
-  const delay = Math.random() * 5 + "s";
-  const duration = Math.random() * 10 + 10 + "s";
-
-  return {
-    width: size,
-    height: size,
-    left: left,
-    top: top,
-    animationDelay: delay,
-    animationDuration: duration,
-    background: `radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, rgba(236, 72, 153, 0) 70%)`,
-    position: "absolute" as const,
-    borderRadius: "50%",
-    filter: "blur(8px)",
-    animation: "floatOrb infinite linear",
-  };
-};
-
-// Logic Validasi 1
+// Logic Validasi (Sama seperti sebelumnya)
 const validateDate = () => {
   const cleanDate = inputDate.value.replace(/[^0-9]/g, "");
-
+  // GANTI TANGGAL DI SINI
   if (cleanDate === "13092016") {
     errorMsg.value = "";
     step.value = 2;
   } else {
-    errorMsg.value = "Salah tanggal! Hayo lupa ya? 😜";
-    shakeScreen();
+    triggerError("Salah tanggal! Hayo lupa ya? 😜");
   }
 };
 
-// Logic Validasi 2
 const validateName = () => {
-  if (inputName.value.toLowerCase() === "sayang") {
+  // GANTI NAMA PANGGILAN DI SINI
+  if (inputName.value.toLowerCase() === "iam") {
     errorMsg.value = "";
     isUnlocked.value = true;
-
     setTimeout(() => {
       emit("unlock");
     }, 1500);
   } else {
-    errorMsg.value = "Bukan itu panggilannya! Coba lagi.";
-    shakeScreen();
+    triggerError("Bukan itu sayang panggilannya! Coba lagi deh.");
   }
 };
 
-const shakeScreen = () => {
-  const container = document.querySelector(".stage-container");
-  if (container) {
-    container.classList.add("animate-shake");
-    setTimeout(() => {
-      container.classList.remove("animate-shake");
-    }, 500);
+const triggerError = (msg: string) => {
+  errorMsg.value = msg;
+  // Efek getar sederhana
+  const card = document.querySelector(".group");
+  if (card) {
+    card.classList.add("animate-shake");
+    setTimeout(() => card.classList.remove("animate-shake"), 500);
   }
 };
 </script>
 
-<style>
-/* Global floating animation definition */
-@keyframes floatOrb {
+<style scoped>
+/* 1. ANIMASI BACKGROUND BLOB */
+@keyframes blob {
   0% {
-    transform: translate(0, 0) scale(1);
-    opacity: 0.3;
+    transform: translate(0px, 0px) scale(1);
   }
   33% {
     transform: translate(30px, -50px) scale(1.1);
-    opacity: 0.6;
   }
   66% {
     transform: translate(-20px, 20px) scale(0.9);
-    opacity: 0.3;
   }
   100% {
-    transform: translate(0, 0) scale(1);
-    opacity: 0.3;
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+.animate-blob {
+  animation: blob 7s infinite;
+}
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* 2. STARS EFFECT (CSS ONLY) */
+.stars {
+  width: 1px;
+  height: 1px;
+  background: transparent;
+  box-shadow:
+    100px 200px #fff,
+    400px 300px #fff,
+    700px 100px #fff,
+    200px 500px #fff,
+    600px 400px #fff,
+    900px 200px #fff;
+  animation: animStar 50s linear infinite;
+}
+.stars2 {
+  width: 2px;
+  height: 2px;
+  background: transparent;
+  box-shadow:
+    150px 250px #fff,
+    450px 350px #fff,
+    750px 150px #fff;
+  animation: animStar 100s linear infinite;
+}
+@keyframes animStar {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(-2000px);
   }
 }
 
-.floating-orb {
-  animation-name: floatOrb;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
+/* 3. TILT GLOW EFFECT */
+.animate-tilt {
+  animation: tilt 10s infinite linear;
 }
-</style>
-
-<style scoped>
-.fade-slide-enter-active,
-.fade-slide-leave-active {
-  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.fade-slide-enter-from {
-  opacity: 0;
-  transform: scale(0.9) translateY(20px);
-}
-.fade-slide-leave-to {
-  opacity: 0;
-  transform: scale(0.95) blur(10px);
-}
-
-/* Animasi Layar Terbelah (Split Screen) */
-@keyframes splitUp {
-  0% {
-    transform: translateY(0);
-  }
+@keyframes tilt {
+  0%,
+  50%,
   100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(1deg);
+  }
+  75% {
+    transform: rotate(-1deg);
+  }
+}
+
+/* 4. TRANSITIONS */
+/* Zoom Fade untuk Card Masuk */
+.zoom-fade-enter-active {
+  transition: all 1s ease-out;
+}
+.zoom-fade-leave-active {
+  transition: all 0.5s ease-in;
+}
+.zoom-fade-enter-from {
+  opacity: 0;
+  transform: scale(0.9) translateY(50px);
+}
+.zoom-fade-leave-to {
+  opacity: 0;
+  transform: scale(1.1) blur(10px);
+}
+
+/* Slide Left untuk Pergantian Pertanyaan */
+.slide-left-enter-active,
+.slide-left-leave-active {
+  transition: all 0.4s ease;
+}
+.slide-left-enter-from {
+  opacity: 0;
+  transform: translateX(20px);
+}
+.slide-left-leave-to {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+/* Curtain Animation */
+@keyframes curtainUp {
+  to {
     transform: translateY(-100%);
   }
 }
-@keyframes splitDown {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
+.animate-curtain-up {
+  animation: curtainUp 1.5s cubic-bezier(0.8, 0, 0.2, 1) forwards;
+}
+@keyframes curtainDown {
+  to {
     transform: translateY(100%);
   }
 }
-
-.animate-curtain-up {
-  animation: curtainUp 1.2s cubic-bezier(0.7, 0, 0.3, 1) forwards;
-}
 .animate-curtain-down {
-  animation: curtainDown 1.2s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+  animation: curtainDown 1.5s cubic-bezier(0.8, 0, 0.2, 1) forwards;
 }
 
+/* Shake Error */
 @keyframes shake {
   0%,
   100% {
     transform: translateX(0);
   }
-  10%,
-  30%,
-  50%,
-  70%,
-  90% {
+  25% {
     transform: translateX(-5px);
   }
-  20%,
-  40%,
-  60%,
-  80% {
+  75% {
     transform: translateX(5px);
   }
 }
 .animate-shake {
-  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  animation: shake 0.3s ease-in-out;
 }
 </style>
