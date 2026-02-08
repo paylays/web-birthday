@@ -95,7 +95,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import Spline from "spline-vue";
+import Spline from "spline-vue/v3";
 
 // Define Emits
 const emit = defineEmits(['unlock']);
