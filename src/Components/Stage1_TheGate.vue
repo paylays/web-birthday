@@ -95,10 +95,10 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import Spline from "spline-vue";
+import Spline from "spline-vue/v3";
 
 // Define Emits
-const emit = defineEmits(['unlock']);
+const emit = defineEmits(["unlock"]);
 
 // State
 const step = ref(1);
@@ -132,7 +132,7 @@ const validateName = () => {
 
     // Emit event ke Parent Component untuk ganti ke Stage 2 setelah animasi selesai (1.5s)
     setTimeout(() => {
-      emit('unlock');
+      emit("unlock");
     }, 1500);
   } else {
     errorMsg.value = "Salah sayang, coba ingat nama panggilannya!";
@@ -141,11 +141,11 @@ const validateName = () => {
 };
 
 const shakeScreen = () => {
-  const container = document.querySelector('.stage-container');
+  const container = document.querySelector(".stage-container");
   if (container) {
-    container.classList.add('animate-shake');
+    container.classList.add("animate-shake");
     setTimeout(() => {
-      container.classList.remove('animate-shake');
+      container.classList.remove("animate-shake");
     }, 500);
   }
 };
@@ -168,12 +168,20 @@ const shakeScreen = () => {
 
 /* Animasi Layar Terbelah (Split Screen) */
 @keyframes splitUp {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-100%); }
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
 }
 @keyframes splitDown {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(100%); }
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100%);
+  }
 }
 
 .animate-split-up {
@@ -185,11 +193,25 @@ const shakeScreen = () => {
 
 /* Animasi Shake untuk Error */
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-  20%, 40%, 60%, 80% { transform: translateX(5px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
 }
 .animate-shake {
-  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 </style>
